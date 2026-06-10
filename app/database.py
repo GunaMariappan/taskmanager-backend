@@ -2,9 +2,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from urllib.parse import quote_plus
+import os
 
-password = quote_plus("sree@2022")
-DATABASE_URL = f"mysql+pymysql://root:{password}@localhost:3306/taskmanager"
+host = os.getenv("DB_HOST", "localhost")
+port = os.getenv("DB_PORT", "3306")
+user = os.getenv("DB_USER", "root")
+password = quote_plus(os.getenv("DB_PASSWORD", "sree@2022"))
+db_name = os.getenv("DB_NAME", "taskmanager")
+
+DATABASE_URL = f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
