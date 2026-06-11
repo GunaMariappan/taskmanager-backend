@@ -1,16 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from urllib.parse import quote_plus
 import os
 
-host = os.getenv("DB_HOST", "localhost")
-port = os.getenv("DB_PORT", "3306")
-user = os.getenv("DB_USER", "root")
-password = quote_plus(os.getenv("DB_PASSWORD", "sree@2022"))
-db_name = os.getenv("DB_NAME", "taskmanager")
+# Render PostgreSQL - set DATABASE_URL in Render Environment Variables
+DATABASE_URL = os.getenv("DATABASE_URL", "")
 
-DATABASE_URL = f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}"
+# Render gives 'postgres://' but SQLAlchemy needs 'postgresql://'
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
